@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+
+   <include href="../dist/mod-login/mod-login.xml"/>
+      
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="../../server/test/conf/localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <parameter name="login.service" href="https://www.google.com/accounts/ClientLogin"/>
+         <filter match="" class="org.xproclet.login.IdentityFilter" ref="login">
+            <next>
+               <filter class="org.xproclet.login.ChallengeFilter" ref="login">
+                  <parameter name="login.type" value="google.ClientLogin"/>
+                  <next>
+                     <filter class="org.xproclet.login.SecurityGuard" ref="login">
+                        <parameter name="pattern" value="/"/>
+                        <next>
+                           <router>
+                              <content match="/" href="web" index="index.xhtml"/>
+                           </router>
+                        </next>
+                     </filter>
+                  </next>
+               </filter>
+            </next>
+         </filter>
+      </host>
+   </server>
+</component>

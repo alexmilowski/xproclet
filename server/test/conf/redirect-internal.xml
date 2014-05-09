@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+
+   <server protocol="HTTP" address="*" port="8080">
+      <host name="*">
+         <redirect match="/" to="riap://host/content/"/>
+         <redirect match="/{file}.xhtml" to="riap://host/content/{file}.xhtml"/>
+         <content match="/content/" href="web" index="index.xhtml"/>
+      </host>
+   </server>
+</component>

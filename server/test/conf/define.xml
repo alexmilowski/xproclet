@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+   
+   <define name="test1" class="org.xproclet.login.LoginApplication">
+      <library href="../../../mod-login/dist/mod-login.jar"/>   
+   </define>
+
+   <define name="lib">
+      <library href="../../../mod-login/dist/mod-login.jar"/>   
+   </define>
+   
+   <define name="test2" class="org.xproclet.login.LoginApplication" ref="lib"/>
+   <define name="test3" class="org.xproclet.login.ChallengeFilter" ref="lib"/>
+   
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <route match="/test1" ref="test1"/>
+         <route match="/test2" ref="test2"/>
+         <route match="/test3" ref="test3"/>
+         <route match="/test4" ref="lib" class="org.xproclet.login.LoginApplication"/>
+      </host>
+   </server>
+</component>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+
+   <keystore file="localhost.keystore" password="localhost"/>
+   
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <content match="/" href="web" index="index.xhtml"/>
+      </host>
+   </server>
+</component>

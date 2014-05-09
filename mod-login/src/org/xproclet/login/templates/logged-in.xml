@@ -1,0 +1,3 @@
+<div xmlns="http://www.w3.org/1999/xhtml" class="appolux-logged-in">
+   <p>{alias} ({name}) <a href="./logout">Sign out</a></p>
+</div>

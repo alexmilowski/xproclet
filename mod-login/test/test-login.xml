@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+   
+   <include href="../dist/mod-login/mod-login.xml"/>
+
+   <server protocol="HTTP" address="*" port="8080">
+      <host name="*">
+         <redirect match="/secure" to="https://localhost:8081/secure/"/>
+         <content match="" href="web" index="index.xhtml"/>
+      </host>
+   </server>
+   
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="../../server/test/conf/localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <parameter name="cookie.name" value="I"/>
+         <parameter name="login.secure.href" href="https://localhost:8081/"/>
+         <parameter name="login.service" href="https://www.google.com/accounts/ClientLogin"/>
+         <parameter name="login.key" value="email"/>
+         <parameter name="login.users" href="users.xml"/>
+         <parameter name="login.tokens" href="tokens.xml"/>
+         <filter match="" class="org.xproclet.login.IdentityFilter" ref="login">
+            <next>
+               <filter class="org.xproclet.login.SecurityGuard" ref="login">
+                  <parameter name="pattern" value="/secure"/>
+                  <parameter name="login.href" value="/app/"/>
+                  <next>
+                     <router>
+                        <route match="/app" class="org.xproclet.login.LoginApplication" ref="login">
+                           <parameter name="login.type" value="google.ClientLogin"/>
+                        </route>
+                        <content match="/secure" href="web" index="secure.xhtml"/>
+                        <content match="" href="web" index="index.xhtml"/>
+                     </router>
+                  </next>
+               </filter>
+            </next>
+         </filter>
+      </host>
+   </server>
+</component>

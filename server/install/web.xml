@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="RIAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+   <client protocol="HTTPS"/>
+
+   <include href="../modules/mod-xproc/mod-xproc.xml"/>
+   <include href="../modules/mod-login/mod-login.xml"/>
+
+   <server protocol="HTTP" address="*" port="8080">
+      <host name="*">
+         <content match="/" href="../web" index="index.xhtml"/>
+      </host>
+   </server>
+</component>

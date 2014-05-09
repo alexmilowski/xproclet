@@ -1,0 +1,16 @@
+<div xmlns="http://www.w3.org/1999/xhtml" class="appolux-login">
+<form method="post" action="{action}">
+   <input type="hidden" name="redirect" value='{url}'/>
+   <table class='login'>
+      <tr class='username'><td><span class="label">Username</span></td>
+          <td><input size="30" name="username" value='{username.value}'/></td>
+      </tr>
+      <tr class='password'><td><span class="label">Password</span></td>
+          <td><input type="password" size="30" name="password" value='{password.value}'/></td>
+       </tr>
+   </table>
+   <input type="submit" value="login"/>
+   <p>{error}</p>
+   <p class='forgot'><a href='#'>Forgot your password?</a></p>
+</form>
+</div>

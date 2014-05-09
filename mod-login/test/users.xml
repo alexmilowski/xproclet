@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user alias='joe' email='joe@example.com' name='Joe Smith'/>
+<user alias='alex' email='alex@milowski.com' name='Alex Milowski'/>
+<user alias='admin' email='admin@example.com' name='Administrator'>
+   <role href='http://www.example.com/Role/Administrator'/>
+   <role href='http://www.example.com/Role/Query'/>
+</user>
+</users>

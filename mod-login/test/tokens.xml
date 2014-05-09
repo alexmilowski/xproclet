@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tokens>
+<!-- each token value maps to a user and can be used in a Bearer Authorization header for access -->
+<token value="54AD682F-7D66-4E83-A31C-8AFF95E70346" user="joe@example.com"/>
+</tokens>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+
+   <server protocol="HTTP" address="*" port="8080">
+      <host name="*">
+         <parameter name="simple" value="simple"/>
+         <parameter name="multi" value="A"/>
+         <parameter name="href" href="web/index.xhtml"/>
+         <route match="/" class="conf.DumpResource">
+            <parameter name="local" value="something"/>
+            <parameter name="simple" replace='true' value="other"/>
+            <parameter name="multi" value="B"/>
+            <parameter name="multi" value="C"/>
+         </route>
+         <route match="/restlet/" class="conf.DumpRestlet">
+            <parameter name="local" value="something"/>
+            <parameter name="simple" replace='true' value="other"/>
+            <parameter name="multi" value="B"/>
+            <parameter name="multi" value="C"/>
+         </route>
+         <route match="/restlet/{A}/" class="conf.DumpRestlet"/>
+         <route match="/{A}/" class="conf.DumpResource"/>
+      </host>
+   </server>
+</component>
