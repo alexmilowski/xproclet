@@ -55,6 +55,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xproclet.server.DocumentLoader;
 
 /**
  *
@@ -232,78 +233,79 @@ public class XProcHelper {
                Document methodDoc = (Document)item;
                Element top = methodDoc.getDocumentElement();
                if (equalsName(top,"method")) {
-                  String methodName = top.getAttribute("name");
-                  String href = top.getAttribute("href");
+                  String methodName = DocumentLoader.getAttributeValue(top,"name");
+                  String href = DocumentLoader.getAttributeValue(top,"href");
                   if (methodName!=null && href!=null) {
                      Method method = Method.valueOf(methodName.trim().toUpperCase());
                      try {
                         URI pipeline = resolve(top.getBaseURI()==null ? null : new URI(top.getBaseURI()),href);
                         if (pipeline==null) {
+                           getLogger().warning("No resolved URI for pipeline method "+methodName);
                            continue;
                         }
+                        getLogger().fine("Configuring pipeline "+pipeline+" for method "+methodName);
                         PipeInfo info = new PipeInfo(pipeline);
-                        if ("true".equals(top.getAttribute("bind-output"))) {
+                        if ("true".equals(DocumentLoader.getAttributeValue(top,"bind-output"))) {
                            getLogger().fine("Binding result for "+method+" on "+pipeline);
                            info.bindResult = true;
                         }
-                        String bindQuery = top.getAttribute("bind-query");
+                        String bindQuery = DocumentLoader.getAttributeValue(top,"bind-query");
                         if ("options".equals(bindQuery)) {
                            info.bindQuery = PipeInfo.QueryBind.OPTIONS;
                         } else if ("parameters".equals(bindQuery)) {
                            info.bindQuery = PipeInfo.QueryBind.PARAMETERS;
                         }
                         methodPipelines.put(method,info);
-                        String outputType = top.getAttribute("output-type");
+                        String outputType = DocumentLoader.getAttributeValue(top,"output-type");
                         if (outputType!=null) {
                            info.outputType = MediaType.valueOf(outputType);
                         }
-                        NodeList nl = top.getElementsByTagNameNS(NS, "option");
-                        for (int i=0; i<nl.getLength(); i++) {
-                           Element option = (Element)nl.item(i);
-                           String name = option.getAttribute("name");
+                        
+                        for (Element option : DocumentLoader.getElementsByName(top, new DocumentLoader.Name(NS,"option"))) {
+                           String name = DocumentLoader.getAttributeValue(option,"name");
                            if (name==null) {
                               continue;
                            }
                            QName optionName = QName.fromClarkName(name);
-                           String source = option.getAttribute("source");
-                           String defaultValue = option.getAttribute("default");
+                           String source = DocumentLoader.getAttributeValue(option,"source");
+                           String defaultValue = DocumentLoader.getAttributeValue(option,"default");
                            if (source!=null) {
                               source = source.trim();
                            }
-                           if (option.hasAttribute("value")) {
-                              String value = option.getAttribute("value");
+                           String value = DocumentLoader.getAttributeValue(option,"value");
+                           if (value!=null) {
                               getLogger().fine("Binding "+optionName+" to value: "+value);
                               info.bindOption(optionName.getClarkName(), value);
                            } else if ("parameters".equals(source)) {
-                              String from = option.getAttribute("from");
+                              String from = DocumentLoader.getAttributeValue(option,"from");
                               if (from==null || from.length()==0) {
                                  from = optionName.getLocalName();
                               }
                               getLogger().fine("Binding "+optionName+" to parameter "+from);
                               info.bindOptionToParameter(from,optionName,defaultValue);
                            } else if ("header".equals(source)) {
-                              String from = option.getAttribute("from");
+                              String from = DocumentLoader.getAttributeValue(option,"from");
                               if (from==null || from.length()==0) {
                                  from = optionName.getLocalName();
                               }
                               getLogger().fine("Binding "+optionName+" to header "+from);
                               info.bindOptionToHeader(from,optionName,defaultValue);
                            } else if ("request".equals(source)) {
-                              String from = option.getAttribute("from");
+                              String from = DocumentLoader.getAttributeValue(option,"from");
                               if (from==null || from.length()==0) {
                                  from = optionName.getLocalName();
                               }
                               getLogger().fine("Binding "+optionName+" to request "+from);
                               info.bindOptionToRequest(from,optionName,defaultValue);
                            } else if ("attributes".equals(source)) {
-                              String from = option.getAttribute("from");
+                              String from = DocumentLoader.getAttributeValue(option,"from");
                               if (from==null || from.length()==0) {
                                  from = optionName.getLocalName();
                               }
                               getLogger().fine("Binding "+optionName+" to attribute "+from);
                               info.bindOptionToAttribute(from,optionName,defaultValue);
                            } else if ("query".equals(source)) {
-                              String from = option.getAttribute("from");
+                              String from = DocumentLoader.getAttributeValue(option,"from");
                               if (from==null || from.length()==0) {
                                  from = optionName.getLocalName();
                               }
@@ -311,10 +313,8 @@ public class XProcHelper {
                               info.bindOptionToQuery(from,optionName,defaultValue);
                            }
                         }
-                        nl = top.getElementsByTagNameNS(NS, "require");
-                        for (int i=0; i<nl.getLength(); i++) {
-                           Element require = (Element)nl.item(i);
-                           String typeName = require.getAttribute("content-type");
+                        for (Element require : DocumentLoader.getElementsByName(top, new DocumentLoader.Name(NS,"require"))) {
+                           String typeName = DocumentLoader.getAttributeValue(require,"content-type");
                            if (typeName==null) {
                               continue;
                            }
@@ -610,6 +610,7 @@ public class XProcHelper {
          }
       }
       if (inputFromRequest) {
+         // Note: excluded case of no entity and no input ports
          if (request.isEntityAvailable() && !unknownPipes && inputPipeName!=null) {
             Representation entity = request.getEntity();
             MediaType mediaType = entity.getMediaType();
@@ -656,6 +657,11 @@ public class XProcHelper {
                response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                cache.release(xproc);
                return;
+            } catch (XProcException ex) {
+               getLogger().warning("Syntax error in XML from client: "+ex.getMessage());
+               response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+               cache.release(xproc);
+               return;
             }
 
             try {
@@ -665,22 +671,20 @@ public class XProcHelper {
             }
 
 
-         } else if (request.isEntityAvailable() || unknownPipes) {
-            // Note: excluded case of no entity and no input ports
-            if (pipeline.getInputs().size()==1) {
+         } else if (!request.isEntityAvailable() && inputPipeName!=null || unknownPipes) {
+            if (inputPipeName!=null) {
                getLogger().severe("Required input not provided to pipeline: "+xproc.location+", port="+xproc.getPipeline().getInputs());
                response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-               cache.release(xproc);
-               return;
-            } else if (pipeline.getInputs().isEmpty()) {
-               getLogger().severe("Input not allowed on pipeline: "+xproc.location);
-               response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-               cache.release(xproc);
-               return;
+            } else {
+               // unsupported
+               getLogger().severe("Input port mismatch: "+xproc.location+", ports="+xproc.getPipeline().getInputs());
+               response.setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
             }
-            // unsupported
-            getLogger().severe("Input port mismatch: "+xproc.location+", ports="+xproc.getPipeline().getInputs());
-            response.setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+            cache.release(xproc);
+            return;
+         } else if (request.isEntityAvailable() && inputPipeName==null) {
+            getLogger().severe("Input not allowed on pipeline: "+xproc.location);
+            response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             cache.release(xproc);
             return;
          }
@@ -724,25 +728,26 @@ public class XProcHelper {
             getLogger().log(Level.WARNING,"I/O exception on close of client stream.",ex);
          }
          
-      } else if (request.isEntityAvailable() || unknownPipes) {
-         // Note: excluded case of no entity and no input ports
-         if (pipeline.getInputs().size()==1) {
+      } else if (!response.isEntityAvailable() && inputPipeName!=null || unknownPipes) {         // Note: excluded case of no entity and no input ports
+         if (inputPipeName!=null) {
             getLogger().severe("Required input not provided to pipeline: "+xproc.location+", port="+xproc.getPipeline().getInputs());
             response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            cache.release(xproc);
-            return;
          } else if (pipeline.getInputs().isEmpty()) {
-            getLogger().severe("Input not allowed on pipeline: "+xproc.location);
-            response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            cache.release(xproc);
-            return;
+            getLogger().severe("Input port mismatch: "+xproc.location+", ports="+xproc.getPipeline().getInputs());
+            response.setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
          }
          // unsupported
-         getLogger().severe("Input port mismatch: "+xproc.location+", ports="+xproc.getPipeline().getInputs());
-         response.setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+         cache.release(xproc);
+         return;
+      } else if (response.isEntityAvailable() && inputPipeName==null) {
+         getLogger().severe("Input not allowed on pipeline: "+xproc.location);
+         response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
          cache.release(xproc);
          return;
       }
+      
+      // clear the response just in case this is a filter
+      response.setEntity(null);
       
       bindOptions(pipeInfo,pipeline,request);
       
@@ -918,6 +923,7 @@ public class XProcHelper {
                   }
                }
             } else {
+               getLogger().info("pipeInfo.outputType="+pipeInfo.outputType);
                final String charset = pipeInfo.outputType.getParameters().getFirstValue("charset");
                response.setEntity(new OutputRepresentation(pipeInfo.outputType) {
                   public void write(OutputStream out) 

@@ -9,8 +9,8 @@
    
    <server protocol="HTTP" address="*" port="8080">
       <host name="*">
-         <attribute name="xproc.cache" class="org.xproclet.xproc.XProcCache" ref="xproc"/>
-         <route match="/test/" ref="xproc">
+         <attribute name="xproc.cache" ref="xproc.cache"/>
+         <route match="/" ref="xproc">
             <parameter name="xproc.href" href="test.xpl"/>
          </route>
       </host>

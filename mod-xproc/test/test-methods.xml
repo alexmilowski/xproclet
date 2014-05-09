@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component xmlns="http://www.xproclet.org/V/Server/">
+<component xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/">
 
    <client protocol="CLAP"/>
    <client protocol="FILE"/>
@@ -9,9 +9,14 @@
    
    <server protocol="HTTP" address="*" port="8080">
       <host name="*">
-         <attribute name="xproc.cache" class="org.xproclet.xproc.XProcCache" ref="xproc"/>
-         <route match="/test/" ref="xproc">
-            <parameter name="xproc.href" href="test.xpl"/>
+         <attribute name="xproc.cache" ref="xproc.cache"/>
+         <route match="/" ref="xproc.methods">
+            <attribute name="xproc.configuration">
+               <xproc:method name="HEAD" href="head.xpl" bind-output="true"/>
+               <xproc:method name="GET" href="get.xpl"/>
+               <xproc:method name="PUT" href="echo.xpl"/>
+               <xproc:method name="POST" href="echo.xpl"/>
+            </attribute>
          </route>
       </host>
    </server>
