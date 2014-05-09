@@ -1,4 +1,4 @@
-XProclet is a web server based on [Restlet](http://www.restlet.org/) that enables simple ways to run [XProc](http://www.w3.org/TR/XProc) pipelines along side other web applications.  The use of the Restlet project allows XProclet to run any Restlet-based application as well as run within a standard J2EE servlet container or as a standalone server.
+XProclet is a web server based on [Restlet](http://www.restlet.org/) that enables simple ways to run [XProc](http://www.w3.org/TR/XProc) pipelines (via [Calabash](http://xmlcalabash.com)) along side other web applications.  The use of the Restlet project allows XProclet to run any Restlet-based application as well as run within a standard J2EE servlet container or as a standalone server.
 
 For example, to simply serve up files from a directory, the configuration (web.xml) is simple:
 
