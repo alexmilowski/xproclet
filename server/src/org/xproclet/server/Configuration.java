@@ -933,6 +933,7 @@ public class Configuration
                      try {
                         Document doc = docBuilder.newDocument();
                         doc.appendChild(doc.importNode(attChild, true));
+                        doc.getDocumentElement().setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:base", attChild.getBaseURI());
                         values.add(doc);
                      } catch (Exception ex) {
                         LOG.log(Level.SEVERE,"Cannot serialize attribute XML.",ex);
