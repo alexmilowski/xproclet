@@ -62,8 +62,8 @@ import org.xml.sax.InputSource;
  */
 public class XProcHelper {
 
-   final static String NS = "http://www.atomojo.org/V/XProc/2011/1/0";
-   final static String HTTP_NS = "http://www.atomojo.org/V/HTTP/2011/1/0";
+   final static String NS = "http://www.xproclet.org/V/XProc/";
+   final static String HTTP_NS = "http://www.xproclet.org/V/HTTP/";
    final static QName HTTP_NAME = QName.fromClarkName("{"+HTTP_NS+"}http");
    final static QName HEADER_NAME = QName.fromClarkName("{"+HTTP_NS+"}header");
    final static QName ENTITY_NAME = QName.fromClarkName("{"+HTTP_NS+"}entity");
