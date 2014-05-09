@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>XProclet by alexmilowski</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>XProclet</h1>
+        <h2>An XProc-enabled Web Server</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/alexmilowski/xproclet/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/alexmilowski/xproclet/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/alexmilowski/xproclet" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>XProclet is a web server based on <a href="http://www.restlet.org/">Restlet</a> that enables simple ways to run <a href="http://www.w3.org/TR/XProc">XProc</a> pipelines (via <a href="http://xmlcalabash.com">Calabash</a>) along side other web applications.  The use of the Restlet project allows XProclet to run any Restlet-based application as well as run within a standard J2EE servlet container or as a standalone server.</p>
+
+<p>For example, to simply serve up files from a directory, the configuration (web.xml) is simple:</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component xmlns="http://www.xproclet.org/V/Server/"&gt;
+
+   &lt;client protocol="CLAP"/&gt;
+   &lt;client protocol="FILE"/&gt;
+   &lt;client protocol="HTTP"/&gt;
+
+   &lt;server protocol="HTTP" address="*"&gt;
+      &lt;host name="*"&gt;
+         &lt;content match="/" href="web" index="index.xhtml"/&gt;
+      &lt;/host&gt;
+   &lt;/server&gt;
+&lt;/component&gt;
+</code></pre>
+
+<p>then you can run the server by simply:</p>
+
+<pre><code>server web.xml
+</code></pre>
+
+<p>More importantly, running XProc as a web service is very easy:</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;component xmlns="http://www.xproclet.org/V/Server/"&gt;
+
+   &lt;client protocol="CLAP"/&gt;
+   &lt;client protocol="FILE"/&gt;
+   &lt;client protocol="HTTP"/&gt;
+
+   &lt;include href="../dist/mod-xproc/mod-xproc.xml"/&gt;
+
+   &lt;server protocol="HTTP" address="*" port="8080"&gt;
+      &lt;host name="*"&gt;
+         &lt;attribute name="xproc.cache" class="org.xproclet.xproc.XProcCache" ref="xproc"/&gt;
+         &lt;route match="/test/" ref="xproc"&gt;
+            &lt;parameter name="xproc.href" href="test.xpl"/&gt;
+         &lt;/route&gt;
+      &lt;/host&gt;
+   &lt;/server&gt;
+&lt;/component&gt;
+</code></pre>
+
+<p>The server configuration will load the necessary libraries and compile the pipeline using Calabash.  The configuration allows associating pipelines with different HTTP methods, mapping headers and parameters to options, and binding outputs to responses.  In this simple example, the pipeline responds to a GET request on <code>/test/</code>.</p>
+
+<p>There is a full compliment of Restlet-oriented features that allows configuration and use of libraries, built-in or custom, of resources, applications, and other constructs.  As necessary, a developer can "escape to Java" and build specialized components.  The routing, filtering, and handling of requests can then all be configured in the markup.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
