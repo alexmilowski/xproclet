@@ -12,6 +12,8 @@ import com.xmlcalabash.model.Serialization;
 import com.xmlcalabash.runtime.XInput;
 import com.xmlcalabash.runtime.XPipeline;
 import com.xmlcalabash.util.S9apiUtils;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -53,7 +55,6 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.util.Series;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xproclet.server.DocumentLoader;
 
@@ -204,6 +205,7 @@ public class XProcHelper {
    List<QName> optionsToBind;
    Map<String,QName> headersToBind;
    Object contextObject;
+   File tmpDir;
    
    static boolean equalsName(Element e,String name)
    {
@@ -219,6 +221,25 @@ public class XProcHelper {
          }
       } catch (Exception ex) {
          getLogger().log(Level.SEVERE,"Cannot retrieve cache from context.",ex);
+      }
+      String tmpDir = context.getParameters().getFirstValue(XProcResource.TMPDIR_PARAM);
+      if (tmpDir!=null) {
+         if (tmpDir.startsWith("file:")) {
+            tmpDir = tmpDir.substring(5);
+         }
+         this.tmpDir = new File(tmpDir);
+         if (!this.tmpDir.exists()) {
+            if (!this.tmpDir.mkdirs()) {
+               getLogger().severe("Cannot create temporary directory "+tmpDir);
+               this.tmpDir = null;
+            }
+         }
+         if (this.tmpDir!=null && !this.tmpDir.isDirectory()) {
+            getLogger().severe("The location "+tmpDir+" is not a directory.");
+            this.tmpDir = null;
+         }
+      } else {
+         this.tmpDir = null;
       }
       this.methodPipelines = new TreeMap<Method,PipeInfo>();
       contextObject = null;
@@ -609,6 +630,7 @@ public class XProcHelper {
             unknownPipes = true;
          }
       }
+      File tmpInputFile = null;
       if (inputFromRequest) {
          // Note: excluded case of no entity and no input ports
          if (request.isEntityAvailable() && !unknownPipes && inputPipeName!=null) {
@@ -640,6 +662,46 @@ public class XProcHelper {
                xmlBuilder.append("</form>");
                xml = xmlBuilder.toString();
                isource = new InputSource(new StringReader(xml));
+            } else if (MediaType.TEXT_ALL.includes(mediaType)) {
+               // TODO: do this more efficiently
+               try {
+                  StringBuilder xmlBuilder = new StringBuilder();
+                  xmlBuilder.append("<data xmlns=\"http://www.w3.org/ns/xproc-step\" content-type=\"");
+                  xmlBuilder.append(mediaType.toString());
+                  xmlBuilder.append("\">");
+                  String data = entity.getText().replace("&", "&amp;").replace("<","&lt;");
+                  xmlBuilder.append(data);
+                  xmlBuilder.append("</data>");
+                  xml = xmlBuilder.toString();
+                  isource = new InputSource(new StringReader(xml));
+               } catch (IOException ex) {
+                  getLogger().warning("I/O error getting text from input: "+ex.getMessage());
+                  response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                  cache.release(xproc);
+                  return;
+               }
+            } else if (tmpDir!=null) {
+               try {
+                  tmpInputFile = File.createTempFile("xproc", ".bin", tmpDir);
+                  FileOutputStream out = new FileOutputStream(tmpInputFile);
+                  entity.write(out);
+                  out.close();
+               } catch (IOException ex) {
+                  getLogger().warning("I/O error getting XML input reader: "+ex.getMessage());
+                  response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                  cache.release(xproc);
+                  return;
+               }
+               StringBuilder xmlBuilder = new StringBuilder();
+               xmlBuilder.append("<file xmlns=\"http://www.w3.org/ns/xproc-step\" content-type=\"");
+               xmlBuilder.append(mediaType.toString());
+               xmlBuilder.append("\" xml:base=\"file:");
+               xmlBuilder.append(tmpInputFile.getParentFile().getAbsolutePath().replace("\"", "&quot;"));
+               xmlBuilder.append("/\" name=\"");
+               xmlBuilder.append(tmpInputFile.getName().replace("\"", "&quot;"));
+               xmlBuilder.append("\"/>");
+               xml = xmlBuilder.toString();
+               isource = new InputSource(new StringReader(xml));
             } else {
                response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                response.setEntity(new StringRepresentation("Unprocessable input media type "+mediaType));
@@ -669,6 +731,7 @@ public class XProcHelper {
             } catch (IOException ex) {
                getLogger().log(Level.WARNING,"I/O exception on close of client stream.",ex);
             }
+            isource = null;
 
 
          } else if (!request.isEntityAvailable() && inputPipeName!=null || unknownPipes) {
@@ -751,6 +814,7 @@ public class XProcHelper {
       
       bindOptions(pipeInfo,pipeline,request);
       
+      // TODO: switch to use finally ... but there are couple of places where the entity releases the pipeline
       try {
          try {
             pipeline.run();
@@ -760,6 +824,13 @@ public class XProcHelper {
             response.setStatus(Status.SERVER_ERROR_INTERNAL);
             return;
          }
+
+         if (tmpInputFile!=null) {
+            if (tmpInputFile.exists() && !tmpInputFile.delete()) {
+               getLogger().warning("Cannot delete temporary input: "+tmpInputFile.getAbsolutePath());
+            }
+         }
+         
          if (xproc.getPipeline().getOutputs().size()==1) {
             final String outputPort = xproc.getPipeline().getOutputs().iterator().next();
             if (pipeInfo.bindResult) {

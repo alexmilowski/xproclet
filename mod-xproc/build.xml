@@ -85,6 +85,7 @@
       <copy file="${file.reference.httpmime-4.2.5.jar}" todir="${output.dir}/lib"/>
       <copy file="${file.reference.saxon9he.jar}" todir="${output.dir}/lib"/>
       <copy file="${file.reference.xmlresolver.jar}" todir="${output.dir}/lib"/>
+      <copy file="${file.reference.marklogic-xcc-7.0.2.jar}" todir="${output.dir}/lib"/>
       <echo file="${output.dir}/mod-xproc.xml">&lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;component xmlns="http://www.xproclet.org/V/Server/">
 &lt;define name="xproc" class="org.xproclet.xproc.XProcResource">
@@ -98,6 +99,7 @@
    &lt;library href="lib/httpmime-4.2.5.jar"/>
    &lt;library href="lib/saxon9he.jar"/>
    &lt;library href="lib/xmlresolver.jar"/>
+   &lt;library href="lib/marklogic-xcc-7.0.2.jar"/>
 &lt;/define>
 &lt;define name="xproc.cache" class="org.xproclet.xproc.XProcCache" ref="xproc"/>
 &lt;define name="xproc.methods" class="org.xproclet.xproc.XProcRestlet" ref="xproc"/>

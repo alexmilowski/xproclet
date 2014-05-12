@@ -41,6 +41,7 @@ public class XProcResource extends ServerResource {
    
    public static final String CONTEXT_ATTR = "xproc.load.context";
    public static final String HREF_PARAM = "xproc.href";
+   public static final String TMPDIR_PARAM = "xproc.tmpdir";
    public static final String LOAD_TYPE_PARAM = "xproc.load.type";
    public static final String OPTION_NAMES_PARAM = "xproc.option.names";
    public static final String OPTION_HEADER_NAMES_PARAM = "xproc.option.header.names";

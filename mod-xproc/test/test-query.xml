@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+
+   <include href="../dist/mod-xproc/mod-xproc.xml"/>
+   
+   <server protocol="HTTP" address="*" port="8080">
+      <host name="*">
+         <attribute name="xproc.cache" ref="xproc.cache"/>
+         <route match="/" ref="xproc.methods">
+            <attribute name="xproc.configuration">
+               <xproc:method name="GET" href="options.xpl" bind-query="options"/>
+               <xproc:method name="GET" href="parameters.xpl" bind-query="parameters"/>
+            </attribute>
+         </route>
+      </host>
+   </server>
+</component>
