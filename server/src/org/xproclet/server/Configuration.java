@@ -504,6 +504,7 @@ public class Configuration
                return;
             }
             URI location = DocumentLoader.resolve(child.getBaseURI(),href); 
+            LOG.fine("Including "+location);
             try {
                Document included = docLoader.load(location);
                Element top = included.getDocumentElement();
@@ -512,6 +513,7 @@ public class Configuration
                    !FILTER.equals(top) &&
                    !ROUTER.equals(top) &&
                    !ROUTE.equals(top)) {
+                  LOG.info("Ignoring "+DocumentLoader.getName(top)+" during configuration.");
                   return;
                }
                attach(router,filter,top,defaultRoute);
@@ -843,9 +845,11 @@ public class Configuration
          } else if (INCLUDE.equals(child)) {
             String href = DocumentLoader.getAttributeValue(child,"href");
             if (href==null) {
+               LOG.warning(DocumentLoader.getLocation(child)+" Missing 'href' attribute on include.");
                continue;
             }
             URI location = DocumentLoader.resolve(child.getBaseURI(),href); 
+            LOG.fine("Including "+location);
             try {
                Document included = docLoader.load(location);
                Element includedTop = included.getDocumentElement();
@@ -854,7 +858,7 @@ public class Configuration
                } else if (DEFINE.equals(includedTop)) {
                   loadDefinition(includedTop);
                } else {
-                  logSevere(child,"Included document starts with unrecognized element "+DocumentLoader.getName(includedTop));
+                  LOG.fine("Ignoring "+DocumentLoader.getName(includedTop)+" for top-level configuration.");
                   continue;
                }
             } catch (Exception ex) {
@@ -993,11 +997,13 @@ public class Configuration
             if (href==null) {
                continue;
             }
-            URI location = DocumentLoader.resolve(child.getBaseURI(),href); 
+            URI location = DocumentLoader.resolve(child.getBaseURI(),href);
+            LOG.fine("Including "+href);
             try {
                Document included = docLoader.load(location);
                Element top = included.getDocumentElement();
                if (!CONTEXT.equals(top)) {
+                  LOG.fine("Ignoring element "+DocumentLoader.getName(top)+" during context load.");
                   continue;
                }
                loadContext(appContext,top);
