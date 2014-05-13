@@ -276,7 +276,7 @@ public class Configuration
          if (ROUTER.equals(child)) {
             String match = DocumentLoader.getAttributeValue(child,"match");
             if (match==null && filter==null && !defaultRoute) {
-               LOG.severe("The router element does not have the required match attribute.");
+               LOG.severe(DocumentLoader.getLocation(child)+" The router element does not have the required match attribute.");
                return;
             }
             if (defaultRoute) {
@@ -513,7 +513,10 @@ public class Configuration
                    !FILTER.equals(top) &&
                    !ROUTER.equals(top) &&
                    !ROUTE.equals(top)) {
-                  LOG.info("Ignoring "+DocumentLoader.getName(top)+" during configuration.");
+                  // Don't generate a warning for context as we use it to load parameters and attributes.
+                  if (!CONTEXT.equals(top)) {
+                     LOG.warning("Ignoring "+DocumentLoader.getName(top)+" from "+location+" during configuration.");
+                  }
                   return;
                }
                attach(router,filter,top,defaultRoute);
@@ -798,6 +801,7 @@ public class Configuration
       }
       if (className!=null && name!=null) {
          Class cdef = theLoader.loadClass(className);
+         LOG.fine("Mapping "+name+" to "+cdef.getCanonicalName());
          definitions.put(name,cdef);
       }
    }
