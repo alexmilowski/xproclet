@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/">
+   <!-- database settings -->
+   <parameter name="app.databases" value="db"/>
+   
+   <!-- MarkLogic User -->
+   <include href="../marklogic.xml"/>
+   
+   <!-- media directory -->
+   <include href="../s3.xml"/>
+   <!--
+   <attribute name="db.app.media.href" href="../media"/>
+   -->
+   
+   <!-- end database settings -->
+   
+   <!-- User login -->
+   <parameter name="login.service" href="https://www.google.com/accounts/ClientLogin"/>
+   <parameter name="login.type" value="google.ClientLogin"/>
+   <parameter name="login.key" value="email"/>
+   <parameter name="login.users" href="users.xml"/>
+   <parameter name="login.tokens" href="tokens.xml"/>
+   
+   <attribute name="app.media.storage" class="org.xproclet.atompub.collections.FileMediaStorage" ref="atompub"/>
+   
+</context>

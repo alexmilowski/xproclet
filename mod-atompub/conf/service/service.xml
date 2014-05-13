@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/" mode="equals" ref="xproclet">
+   <attribute name="xproc.configuration">
+      <xproc:method name="GET" href="service.xpl" output-type="application/atomsvc+xml">
+         <xproc:option name="request-host" source="header" from="Host"/>
+      </xproc:method>
+   </attribute>
+</route>

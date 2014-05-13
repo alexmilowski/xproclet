@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/">
+   <route match="/collections/list{?uri}" ref="xproclet">
+      <parameter name="xproc.option.names" value="uri"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="collection-list.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/document{?uri}"  ref="xproclet">
+      <parameter name="xproc.option.names" value="uri"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="get-document.xpl" bind-output="true"/>
+         <xproc:method name="DELETE" href="delete-document.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/collections/" mode="equals" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="collections.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/workspaces/" mode="equals" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="workspaces.xpl"/>
+         <xproc:method name="POST" href="create-workspace.xpl"/>   
+      </attribute>
+   </route>
+   <route match="/workspaces/{uuid}/" mode="equals" ref="xproclet">
+      <parameter name="xproc.option.names" value="uuid"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="get-workspace.xpl" bind-output="true"/>
+         <xproc:method name="PUT" href="update-workspace.xpl" bind-output="true"/>   
+         <xproc:method name="DELETE" href="delete-workspace.xpl" bind-output="true"/>   
+      </attribute>
+   </route>
+</router>
+

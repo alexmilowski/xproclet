@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>APP Editor</title>
+    <link rel="stylesheet" type="text/css" href="doc.css"/>
+    <link rel="stylesheet" type="text/css" href="editor.css"/>
+    <script type="text/javascript" src="HTTP.js">//</script>
+    <script type="text/javascript" src="DOM.js">//</script>
+    <script type="text/javascript" src="Atom.js">//</script>
+    <script type="text/javascript" src="XHTMLSerializer.js">//</script>
+    <script type="text/javascript" src="APPEditor.js">//</script>
+    <script type="text/javascript" src="APPEntryEditor.js">//</script>
+    <script type="text/javascript" src="APPFeedEditor.js">//</script>
+    <script type="text/javascript" src="APPFeedEntryEditor.js">//</script>
+    <script type="text/javascript" src="APPMediaManager.js">//</script>
+    <script type="text/javascript" src="APPLinkEditor.js">//</script>
+    <script type="text/javascript" src="APPCategoryEditor.js">//</script>
+    <script type="text/javascript" src="Upload.js">//</script>
+    <script type="text/javascript">
+       var path = window.location.pathname.substring(0,window.location.pathname.length-5);
+       var editor = new APPEditor(window.location.href,window.location.protocol+"//"+window.location.host+path);
+    </script>
+  </head>
+  <body onload="editor.showService(document.getElementById('service'))">
+     <div id="service" style="margin: 10px">
+     </div>
+  </body>
+</html>

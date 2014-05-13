@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/collections">
+   <route match="/" mode="equals" ref="xproclet">
+      <parameter name="xproc.option.header.names" value="Slug=slug"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="collections.xpl" output-type="application/atom+xml; charset=utf-8; type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+         </xproc:method>
+         <xproc:method name="POST" href="create-collection.xpl" bind-output="true">
+            <xproc:require content-type="application/atomsvc+xml"/>
+         </xproc:method>
+      </attribute>
+   </route>
+   <route match="/{name}.atom" mode="equals" class="org.xproclet.atompub.collections.CollectionEntryRestlet" ref="atompub">
+      <parameter name="xproc.option.names" value="name"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="HEAD" href="head-collection-document.xpl" bind-output="true"/>
+         <xproc:method name="GET" href="get-collection-entry.xpl" bind-output="true"/>
+         <xproc:method name="PUT" href="update-collection-entry.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/{name}.col" mode="equals" ref="xproclet">
+      <parameter name="xproc.option.names" value="name"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="HEAD" href="head-collection-document.xpl" bind-output="true"/>
+         <xproc:method name="GET" href="get-collection-document.xpl" bind-output="true"/>
+         <xproc:method name="PUT" href="update-collection-document.xpl" bind-output="true"/>
+         <xproc:method name="DELETE" href="delete-collection-entry.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/{name}/" mode="equals" class="org.xproclet.atompub.collections.CollectionRestlet" ref="atompub">
+      <parameter name="xproc.option.names" value="name"/>
+      <parameter name="app.base.href" href=""/>
+      <parameter name="app.check.media" value="check-collection-feed-media.xpl"/>
+      <parameter name="app.create.media" value="create-collection-feed-media.xpl"/>
+      <parameter name="app.create.media.entry" value="create-collection-feed-media-entry.xpl"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="HEAD" href="head-collection-feed.xpl" bind-output="true"/>
+         <xproc:method name="GET" href="get-collection-feed.xpl" bind-output="true" output-type="application/atom+xml; charset=utf-8; type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+            <xproc:option name="limit" source="query" default="100"/>
+            <xproc:option name="start" source="query" default="1"/>
+            <xproc:option name="by-term" source="query" default=""/>
+            <xproc:option name="published" source="query" default=""/>
+         </xproc:method>
+         <xproc:method name="POST" href="create-collection-feed-entry.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/{name}/_/{id}.atom" mode="equals" class="org.xproclet.atompub.collections.EntryRestlet" ref="atompub">
+      <parameter name="xproc.option.names" value="name,id"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="HEAD" href="head-collection-feed-entry.xpl" bind-output="true"/>
+         <xproc:method name="GET" href="get-collection-feed-entry.xpl" bind-output="true">
+            <xproc:option name="request-host" source="header" from="Host"/>
+         </xproc:method>
+         <xproc:method name="PUT" href="update-collection-feed-entry.xpl" bind-output="true">
+            <xproc:require content-type="application/atom+xml"/>
+         </xproc:method>
+         <xproc:method name="DELETE" href="delete-collection-feed-entry.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+   <route match="/{name}/{file}" mode="equals" class="org.xproclet.atompub.collections.MediaRestlet" ref="atompub">
+      <parameter name="xproc.option.names" value="name,file"/>
+      <attribute name="xproc.configuration">
+         <xproc:method name="HEAD" href="head-collection-feed-media.xpl" bind-output="true"/>
+         <xproc:method name="GET" href="get-collection-feed-media.xpl" bind-output="true"/>
+         <xproc:method name="PUT" href="update-collection-feed-media.xpl" bind-output="true"/>
+         <xproc:method name="POST" href="append-collection-feed-media.xpl" bind-output="true"/>
+      </attribute>
+   </route>
+</router>
+

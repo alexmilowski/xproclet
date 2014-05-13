@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/">
+
+   <client protocol="CLAP"/>
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+   <client protocol="HTTPS"/>
+   <client protocol="RIAP"/>
+   <client protocol="JAR"/>
+   
+   <include href="../../mod-xproc/dist/mod-xproc/mod-xproc.xml"/>
+   <include href="../../mod-login/dist/mod-login/mod-login.xml"/>
+   <define name="atompub" ref="xproc">
+      <library href="../dist/mod-atompub.jar"/>   
+      <library href="../../thirdparty/aws-java-sdk-1.2.7.jar"/>
+   </define>
+   <include href="../s3-def.xml"/>
+   
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <include href="settings.xml"/>
+         <attribute name="xproc.cache" ref="xproc.cache"/>
+         <include href="../conf/atompub.xml"/>
+      </host>
+   </server>
+</component>

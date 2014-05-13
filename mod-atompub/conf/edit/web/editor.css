@@ -1,0 +1,213 @@
+.app-service-editor .tabs {
+   list-style: none;
+   padding: 0px;
+   margin: 0px;
+}
+
+.app-service-editor .tabs li {
+   border: 1px solid  rgb(75,75,75);
+   border-bottom-width: 0px;
+   float: left;
+   margin: 0px;
+   padding: 0px;
+   margin-right: 0px !important;
+}
+
+.app-service-editor .tabs li.selected {
+   color: black;
+}
+
+.app-service-editor .tabs-content {
+   border: 1px solid rgb(75,75,75);
+   padding-top: 0px;
+   clear: both;
+}
+
+.app-service-editor .tabs a {
+   display: block;
+   background-color: rgb(238,238,238);
+   padding-top: 0.25em;
+   padding-bottom: 0.25em;
+   text-align: center;
+   text-decoration: none;
+   min-width: 10em;
+}
+
+.app-service-editor .tabs .selected a {
+   background: white;
+   color: black;
+   font-weight: bold;
+   position: relative;
+   top: 1px;
+}
+
+.app-service-editor .xhtml-editor {
+   min-height: 25em;
+   min-width: 10em;
+}
+.app-service-editor .xhtml-editor .content {
+   min-height: 23em;
+   width: 80%;
+}
+
+.app-service-editor .xhtml-editor .content a {
+   text-decoration: underline;
+}
+
+.app-service-editor .xhtml-editor .controls {
+   height: 32px;
+   line-height: 32px;
+   border-bottom: 1px solid rgb(75,75,75);
+   padding-top: 1px;
+   padding-left: 1em;
+}
+
+.app-service-editor .xhtml-editor .controls .image-button {
+   display: inline-block;
+   border: 1px solid rgb(75,75,75);
+   vertical-align: middle;
+   padding: 0px;
+   margin: 0px;
+   margin-right: 2px;
+   margin-top: 8px;
+   height: 16px;
+   width: 16px;
+   overflow: hidden;
+}
+
+.app-service-editor .xhtml-editor .controls .image-button img {
+   border: none;
+}
+
+.app-service-editor .source-editor {
+   min-height: 25em;
+   max-height: 50em;
+   max-width: 50em;
+}
+
+.app-service-editor td {
+   text-align: left;
+   vertical-align: top;
+}
+.app-service-editor td.label {
+   text-align: right;
+}
+.app-service-editor th {
+  text-align: left;
+}
+
+.app-service-editor tr {
+  vertical-align: top;
+}
+
+.app-service-editor tr.collection td.operations {
+   min-width: 8em;
+}
+
+.app-service-editor a {
+   color: rgb(75,75,75);
+   text-decoration: none;
+}
+
+.app-service-editor a:hover {
+   color: rgb(255,143,0);
+}
+
+.app-service-editor h2 {
+   color: rgb(255,143,0);
+   font-size: 1em;
+}
+
+.app-service-editor h2 a {
+   font-size: .8em;
+   padding-left: 1em;
+}
+
+.app-service-editor .controls {
+   padding-bottom: 2px;
+   border-bottom: 1px solid rgb(255,143,0);
+   margin-bottom: 2px;
+}
+.app-service-editor thead th {
+   color: rgb(255,143,0);
+}
+
+.app-service-editor .controls a {
+   text-decoration: none;
+   margin-right: 1em;
+}
+
+.app-service-editor .error {
+   font-weight: bold;
+   color: red;
+}
+
+.app-service-editor-add {
+   display: none;
+}
+
+.app-media-manager {
+   display: none;
+}
+
+.app-entry-editor, .app-entry-editor .links, .app-entry-editor .categories {
+   display: none;
+}
+
+.app-entry-editor table {
+   width: 100%;
+}
+
+.app-entry-editor td.label {
+   width: 6em;
+}
+
+.app-entry-editor .toggle {
+   margin-bottom: 0.2em;
+}
+
+.app-feed-editor, .app-feed-editor .links, .app-feed-editor .categories {
+   display: none;
+}
+
+.app-feed-editor h2 {
+   border-bottom: 2px solid rgb(255,143,0);
+}
+
+
+.app-feed-editor td.label {
+   width: 6em;
+}
+
+.app-feed-entry-editor, .app-feed-entry-editor .links, .app-feed-entry-editor .categories {
+   display: none;
+}
+
+.app-feed-entry-editor h2 {
+   border-bottom: 2px solid rgb(255,143,0);
+}
+
+.app-feed-entry-editor p, .app-entry-editor p {
+   margin-top: 0px;
+}
+
+.app-feed-entry-editor .upload {
+   height: 3em;
+}
+
+.app-entry-editor .categories, .app-feed-editor .categories {
+   margin-bottom: 1em;
+}
+
+.app-entry-editor .upload {
+   height: 3em;
+}
+
+.app-entry-editor .edit .controls {
+   border: none;
+}
+
+
+.app-entry-editor .links, .app-feed-editor .links {
+   margin-bottom: 1em;
+}

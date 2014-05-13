@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="">
+   <parameter name="xproc.option.names" value="xdb.user,xdb.password,xdb.host,xdb.port,app.database,app.path"/>
+   <route match="/" mode="equals" class="org.xproclet.atompub.DatabaseListResource" ref="atompub"/>
+   <filter match="/{app.database}" class="org.xproclet.atompub.DatabaseNameFilter" ref="atompub">
+      <parameter name="names" value="xdb.user,xdb.password,xdb.host,xdb.port,app.media.href,app.s3.bucket"/>
+
+      <next>
+         <router>
+            <!-- Main APP implementation -->
+            <include href="service/service.xml"/>
+            <include href="collections/collections.xml"/>
+            <include href="terms/terms.xml"/>
+            <include href="topics/topics.xml"/>
+            <include href="timeline/timeline.xml"/>
+            <include href="edit/edit.xml"/>
+            <filter match="/query" class="org.xproclet.login.SecurityGuard" ref="login">
+               <parameter name="pattern" value=""/>
+               <parameter name="roles" value="http://www.xproclet.org/Role/Query"/>
+               <next>
+                  <include href="query/query.xml"/>
+               </next>
+            </filter>
+            <filter match="/admin" class="org.xproclet.login.SecurityGuard" ref="login">
+               <parameter name="pattern" value=""/>
+               <parameter name="roles" value="http://www.xproclet.org/Role/Administrator"/>
+               <next>
+                  <include href="admin/admin.xml"/>
+               </next>
+            </filter>
+         </router>
+      </next>
+    </filter>
+
+</router>

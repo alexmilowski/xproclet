@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/edit/">
+   <content match="" href="web"/>
+   <route match="uploader" class="org.xproclet.atompub.upload.UploadApplication" ref="atompub"/>
+</router>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/timeline/">
+   <route match="updated/" mode="equals" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="timeline/get-updated-feed.xpl" output-type="application/atom+xml;type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+            <xproc:option name="limit" source="query" default="100"/>
+            <xproc:option name="start" source="query" default="1"/>
+         </xproc:method>
+      </attribute>
+   </route>
+   <route match="published/" mode="equals" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="timeline/get-published-feed.xpl" output-type="application/atom+xml;type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+            <xproc:option name="limit" source="query" default="100"/>
+            <xproc:option name="start" source="query" default="1"/>
+         </xproc:method>
+      </attribute>
+   </route>
+   <route match="edited/" mode="equals" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="timeline/get-edited-feed.xpl" output-type="application/atom+xml;type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+            <xproc:option name="limit" source="query" default="100"/>
+            <xproc:option name="start" source="query" default="1"/>
+         </xproc:method>
+      </attribute>
+   </route>
+</router>
+

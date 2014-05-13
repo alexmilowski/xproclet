@@ -1,0 +1,133 @@
+<div class="app-service-editor" xmlns="http://www.w3.org/1999/xhtml">
+   <div class="app-service-editor-status"></div>
+   <div class="app-service-editor-list">
+      <p class="controls"><a href="#" rel="add" title="Add a collection">[add]</a><a href="#" rel="delete" title="Delete checked collections">[delete]</a></p>
+      <table class="collections">
+         <thead>
+            <tr><th></th><th>Path</th><th></th><th>Title</th></tr>
+         </thead>
+         <tbody></tbody>
+      </table>
+   </div>
+   <div class="app-service-editor-add">
+      <h2>Add Collection</h2>
+      <table>
+         <tr><td class="label"><label>Path:</label></td>
+             <td><input name="add-path" size="71"/><br/>
+                 <span class="error"></span></td>
+         </tr>
+         <tr><td class="label"><label>Title:</label></td>
+             <td><input name="add-title" size="71"/><br/>
+                 <span class="error"></span></td>
+         </tr>
+         <tr><td class="label"></td>
+             <td><button type="button" value="ok">Add</button><button type="button" value="cancel">Cancel</button></td>
+         </tr>
+      </table>
+   </div>
+   <div class="app-entry-editor">
+      <h2>Entry Details</h2>
+      <table>
+         <tr><td class="label"><label>Title:</label></td>
+             <td><input name="title" size="71"/><br/>
+                 <span class="error"></span></td>
+         </tr>
+         <tr><td class="label"><label>Summary:</label></td>
+            <td><textarea name="summary" cols="71" rows="4"></textarea></td>
+         </tr>
+         <tr><td class="label"><label>Content:</label></td>
+             <td>
+                <p class="toggle"><a href="#" rel="content">[show content]</a></p>
+                <div class="content">
+                </div>
+             </td>
+         </tr>
+         <tr><td class="label"><label>Categories:</label></td>
+            <td>
+                <p><a href="#" rel="categories">[show categories]</a></p>
+                <div class="categories">
+                   <p class="controls"><a href="#" rel="add-category" title="Add a category">[add]</a><a href="#" rel="delete-categories" title="Delete checked categories">[delete]</a></p>
+                   <table>
+                      <thead>
+                         <tr><th></th><th>scheme</th><th>type</th><th>value</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                   </table>
+                </div>
+             </td>
+         </tr>
+         <tr><td class="label"><label>Links:</label></td>
+             <td>
+                <p><a href="#" rel="links">[show links]</a></p>
+                <div class="links">
+                   <p class="controls"><a href="#" rel="add-link" title="Add a link">[add]</a><a href="#" rel="delete-links" title="Delete checked links">[delete]</a></p>
+                   <table>
+                      <thead>
+                         <tr><th></th><th>rel</th><th>href</th><th>type</th><th>title</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                   </table>
+                </div>
+             </td>
+         </tr>
+         <tr><td class="label"></td>
+             <td><button type="button" value="ok">Add</button><button type="button" value="cancel">Cancel</button></td>
+         </tr>
+      </table>
+   </div>
+   <div class="app-feed-editor">
+      <h2>Feed Details</h2>
+      <table>
+         <tr><td class="label"><label>Title:</label></td>
+             <td><input name="title" size="71"/><br/>
+                 <span class="error"></span></td>
+         </tr>
+         <tr><td class="label"><label>Subtitle:</label></td>
+            <td><textarea name="subtitle" cols="71" rows="4"></textarea></td>
+         </tr>
+         <tr><td class="label"><label>Categories:</label></td>
+            <td>
+                <p><a href="#" rel="categories">[show categories]</a></p>
+                <div class="categories">
+                   <p class="controls"><a href="#" rel="add-category" title="Add a category">[add]</a><a href="#" rel="delete-categories" title="Delete checked categories">[delete]</a></p>
+                   <table>
+                      <thead>
+                         <tr><th></th><th>scheme</th><th>type</th><th>value</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                   </table>
+                </div>
+             </td>
+         </tr>
+         <tr><td class="label"><label>Links:</label></td>
+            <td>
+                <p><a href="#" rel="links">[show links]</a></p>
+                <div class="links">
+                   <p class="controls"><a href="#" rel="add-link" title="Add a link">[add]</a><a href="#" rel="delete-links" title="Delete checked links">[delete]</a></p>
+                   <table>
+                      <thead>
+                         <tr><th></th><th>rel</th><th>href</th><th>type</th><th>title</th></tr>
+                      </thead>
+                      <tbody></tbody>
+                   </table>
+                </div>
+             </td>
+         </tr>
+         <tr><td class="label"></td>
+             <td><button type="button" value="ok">Update</button><button type="button" value="cancel">Cancel</button></td>
+         </tr>
+      </table>
+   </div>
+   <div class="app-feed-entry-editor">
+      <h2>Feed</h2>
+      <div class="list">
+         <p class="controls"><a href="#" rel="add" title="Add a new entry">[add]</a><a href="#" rel="upload" title="Upload a file">[upload]</a><a href="#" rel="delete" title="Delete checked entries">[delete]</a><a href="#" rel="return">[return to list]</a></p>
+         <table class="files">
+            <thead>
+               <tr><th></th><th>Title</th><th></th><th>Updated</th></tr>
+            </thead>
+            <tbody></tbody>
+         </table>
+      </div>
+   </div>
+</div>
