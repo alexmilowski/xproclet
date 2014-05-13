@@ -10,7 +10,7 @@
    <server protocol="HTTP" address="*" port="8080">
       <host name="*">
          <attribute name="xproc.cache" ref="xproc.cache"/>
-         <route match="/" ref="xproc.methods">
+         <route match="/" ref="xproclet">
             <attribute name="xproc.configuration">
                <xproc:method name="HEAD" href="head.xpl" bind-output="true"/>
                <xproc:method name="GET" href="get.xpl"/>

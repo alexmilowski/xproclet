@@ -102,7 +102,7 @@
    &lt;library href="lib/marklogic-xcc-7.0.2.jar"/>
 &lt;/define>
 &lt;define name="xproc.cache" class="org.xproclet.xproc.XProcCache" ref="xproc"/>
-&lt;define name="xproc.methods" class="org.xproclet.xproc.XProcRestlet" ref="xproc"/>
+&lt;define name="xproclet" class="org.xproclet.xproc.XProcRestlet" ref="xproc"/>
 &lt;/component>
 </echo>
    </target>
