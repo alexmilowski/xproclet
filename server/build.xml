@@ -134,5 +134,8 @@ java -Xmx2048m -jar %INSTALL_PATH/xproclet-server.jar $*
        <copy todir="${install.dir}/modules/mod-login">
           <fileset dir="../mod-login/dist/mod-login"/>
        </copy>
+       <copy todir="${install.dir}/modules/mod-atompub">
+          <fileset dir="../mod-atompub/dist/mod-atompub"/>
+       </copy>
     </target>    
 </project>
