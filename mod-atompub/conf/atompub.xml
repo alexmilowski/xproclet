@@ -16,14 +16,14 @@
             <include href="edit/edit.xml"/>
             <filter match="/query" class="org.xproclet.login.SecurityGuard" ref="login">
                <parameter name="pattern" value=""/>
-               <parameter name="roles" value="http://www.xproclet.org/Role/Query"/>
+               <parameter name="roles" value="http://www.atomojo.org/Role/Query"/>
                <next>
                   <include href="query/query.xml"/>
                </next>
             </filter>
             <filter match="/admin" class="org.xproclet.login.SecurityGuard" ref="login">
                <parameter name="pattern" value=""/>
-               <parameter name="roles" value="http://www.xproclet.org/Role/Administrator"/>
+               <parameter name="roles" value="http://www.atomojo.org/Role/Administrator"/>
                <next>
                   <include href="admin/admin.xml"/>
                </next>
