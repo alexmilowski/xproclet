@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/term/">
+   <route match="tags/" ref="xproclet">
+      <attribute name="xproc.configuration">
+         <xproc:method name="GET" href="get-tags-feed.xpl" output-type="application/atom+xml;type=feed">
+            <xproc:option name="request-host" source="header" from="Host"/>
+            <xproc:option name="limit" source="query" default="100"/>
+            <xproc:option name="start" source="query" default="1"/>
+            <xproc:option name="forwarded-host" source="header" from="X-Forwarded-Host" default=""/>
+            <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
+         </xproc:method>
+      </attribute>
+   </route>
    <route match="{term}" mode="equals" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-term-feed.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-term-feed.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="term" source="attributes"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
@@ -14,7 +25,7 @@
    </route>
    <route match="{term}/" mode="equals" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-term-feed.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-term-feed.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="term" source="attributes"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
@@ -26,7 +37,7 @@
    </route>
    <route match="" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-term-uri-feed.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-term-uri-feed.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="uri" from="remaining" source="request"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
