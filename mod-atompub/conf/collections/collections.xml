@@ -44,7 +44,9 @@
             <xproc:option name="forwarded-path" source="header" from="X-Forwarded-Path" default=""/>
             <xproc:option name="limit" source="query" default="100"/>
             <xproc:option name="start" source="query" default="1"/>
-            <xproc:option name="by-term" source="query" default=""/>
+            <xproc:option name="scheme" source="query" default=""/>
+            <xproc:option name="term" source="query" default=""/>
+            <xproc:option name="order-by" source="query" default="updated"/>
             <xproc:option name="published" source="query" default=""/>
          </xproc:method>
          <xproc:method name="POST" href="create-collection-feed-entry.xpl" bind-output="true"/>

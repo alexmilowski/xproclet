@@ -11,7 +11,8 @@
 <p:option name='name'/>
 <p:option name='limit'/>
 <p:option name='start'/>
-<p:option name='by-term'/>
+<p:option name='scheme'/>
+<p:option name='term'/>
 <p:option name='published'/>
 <p:option name='app.path'/>
 <p:option name='request-host'/>
@@ -30,7 +31,9 @@
 <p:with-param name='name' select='$name'/>
 <p:with-param name='limit' select="$limit"/>
 <p:with-param name='start' select="$start"/>
-<p:with-param name='by-term' select="$by-term"/>
+<p:with-param name='term' select="$term"/>
+<p:with-param name='scheme' select="$scheme"/>
+<p:with-param name='order-by' select="$order-by"/>
 <p:with-param name='published' select="$published"/>
 <p:with-param name='request-host' select='if (string-length($forwarded-host)>0) then $forwarded-host else $request-host'/>
 <p:with-param name='app.path' select='if (string-length($forwarded-path)>0) then $forwarded-path else $app.path'/>
@@ -43,8 +46,10 @@ declare namespace atom='http://www.w3.org/2005/Atom';
 declare variable $name external;
 declare variable $limit external;
 declare variable $start external;
-declare variable $by-term external;
+declare variable $scheme external;
+declare variable $term external;
 declare variable $published external;
+declare variable $order-by external;
 declare variable $app.path external;
 declare variable $request-host external;
 let $uri := concat('app://collections/',$name,'.col'), $d := document($uri), $curi := concat('app://collections/',$name,'/entry'),
@@ -92,13 +97,30 @@ let $uri := concat('app://collections/',$name,'.col'), $d := document($uri), $cu
             (for $e in collection($curi)/atom:entry
                order by $e/atom:updated descending return $e)[1]/atom:updated,
             for $e in 
-               (if ($published)
-                then for $e in collection($curi)/atom:entry[atom:published=$published] order by $e/atom:updated descending return $e
-                else
-                if ($by-term) 
-                then for $e in collection($curi)/atom:entry order by $e/atom:category[@term=$by-term] descending, $e/atom:updated descending return $e
-                else for $e in collection($curi)/atom:entry order by $e/atom:updated descending return $e
+               (
+                if ($order-by = "published")
+                then 
+                  if ($published)
+                  then for $e in collection($curi)/atom:entry[atom:published=$published] order by $e/atom:published descending return $e
+                  else
+                  if ($scheme and $term)
+                  then for $e in collection($curi)/atom:entry[atom:category[@term=$term and @scheme=$scheme ]] order by $e/atom:published descending return $e
+                  else
+                  if ($term) 
+                  then for $e in collection($curi)/atom:entry[atom:category[@term=$term and not(@scheme)]] order by $e/atom:published descending return $e
+                  else for $e in collection($curi)/atom:entry order by $e/atom:published descending return $e
+                else 
+                  if ($published)
+                  then for $e in collection($curi)/atom:entry[atom:published=$published] order by $e/atom:updated descending return $e
+                  else
+                  if ($scheme and $term) 
+                  then for $e in collection($curi)/atom:entry[atom:category[@term=$term and @scheme=$scheme]] order by $e/atom:updated descending return $e
+                  else
+                  if ($term) 
+                  then for $e in collection($curi)/atom:entry[atom:category[@term=$term and not(@scheme)]] order by $e/atom:updated descending return $e
+                  else for $e in collection($curi)/atom:entry order by $e/atom:updated descending return $e
                )[position()&gt;=$istart and position()&lt;$ilimit]
+               
                return (element atom:entry {
                  "
 ",
