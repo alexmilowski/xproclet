@@ -44,3 +44,5 @@ More importantly, running XProc as a web service is very easy:
 The server configuration will load the necessary libraries and compile the pipeline using Calabash.  The configuration allows associating pipelines with different HTTP methods, mapping headers and parameters to options, and binding outputs to responses.  In this simple example, the pipeline responds to a GET request on `/test/`.
 
 There is a full compliment of Restlet-oriented features that allows configuration and use of libraries, built-in or custom, of resources, applications, and other constructs.  As necessary, a developer can "escape to Java" and build specialized components.  The routing, filtering, and handling of requests can then all be configured in the markup.
+
+Read more about [using and configuring XProclet](https://github.com/alexmilowski/xproclet/wiki) in the wiki!
