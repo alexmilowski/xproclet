@@ -2,7 +2,7 @@
 <router xmlns="http://www.xproclet.org/V/Server/" xmlns:xproc="http://www.xproclet.org/V/XProc/" match="/topic/">
    <route match="{leaf}" mode="equals" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-topic.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-topic.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="leaf" source="attributes"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
@@ -14,7 +14,7 @@
    </route>
    <route match="{leaf}/" mode="equals" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-topic.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-topic.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="leaf" source="attributes"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
@@ -26,7 +26,7 @@
    </route>
    <route match="" ref="xproclet">
       <attribute name="xproc.configuration">
-         <xproc:method name="GET" href="terms/get-topic-by-path.xpl" output-type="application/atom+xml;type=feed">
+         <xproc:method name="GET" href="get-topic-by-path.xpl" output-type="application/atom+xml;type=feed">
             <xproc:option name="path" from="remaining" source="request"/>
             <xproc:option name="request-host" source="header" from="Host"/>
             <xproc:option name="limit" source="query" default="100"/>
