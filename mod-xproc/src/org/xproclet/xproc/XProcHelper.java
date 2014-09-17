@@ -831,7 +831,13 @@ public class XProcHelper {
             }
          }
          
-         if (xproc.getPipeline().getOutputs().size()==1) {
+         if (xproc.getPipeline().getOutputs().size()>=1) {
+            URI location = xproc.location;
+            cache.release(xproc);
+            getLogger().warning("Pipeline "+location+" has too many output ports.");
+            response.setStatus(Status.SERVER_ERROR_INTERNAL);
+            return;
+         } else if (xproc.getPipeline().getOutputs().size()==1) {
             final String outputPort = xproc.getPipeline().getOutputs().iterator().next();
             if (pipeInfo.bindResult) {
                getLogger().fine("Binding result of pipeline run...");
