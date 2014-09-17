@@ -83,7 +83,6 @@ public class Configuration
    static final DocumentLoader.Name ROUTE = new DocumentLoader.Name(NAMESPACE,"route");
    static final DocumentLoader.Name FILTER = new DocumentLoader.Name(NAMESPACE,"filter");
    static final DocumentLoader.Name ROUTER = new DocumentLoader.Name(NAMESPACE,"router");
-   static final DocumentLoader.Name MATCH = new DocumentLoader.Name(NAMESPACE,"match");
    static final DocumentLoader.Name ATTRIBUTE = new DocumentLoader.Name(NAMESPACE,"attribute");
    static final DocumentLoader.Name NEXT = new DocumentLoader.Name(NAMESPACE,"next");
    static final DocumentLoader.Name DEFAULT = new DocumentLoader.Name(NAMESPACE,"default");
