@@ -58,6 +58,7 @@ public class ProxyApplication extends Application
    Set<Method> allowedMethods;
    List<String> headersToCopy;
    Map<String,HeaderSpec> headersToAdd;
+   Map<String,HeaderSpec> responseHeadersToAdd;
    boolean trimLeadingSlash;
    boolean treatAsTemplate;
    
@@ -88,18 +89,27 @@ public class ProxyApplication extends Application
          headersToCopy.add(headers[i]);
       }
       headersToAdd = new TreeMap<String,HeaderSpec>();
+      responseHeadersToAdd = new TreeMap<String,HeaderSpec>();
       headers = context.getParameters().getValuesArray("header");
       for (int i=0; i<headers.length; i++) {
          int eq = headers[i].indexOf("=");
          if (eq>0) {
             String name = headers[i].substring(0,eq);
             String value = headers[i].substring(eq+1);
+            Map<String,HeaderSpec> targetMap = headersToAdd;
+            if (name.charAt(0)=='←') {
+               name = name.substring(1);
+               targetMap = responseHeadersToAdd;
+            } else if (name.charAt(0)=='→') {
+               name = name.substring(1);
+               targetMap = headersToAdd;
+            }
             if (name.charAt(0)=='?') {
-               headersToAdd.put(name.substring(1),new HeaderSpec(HeaderSpec.Type.OnlyIfNotPresent,value));
+               targetMap.put(name.substring(1),new HeaderSpec(HeaderSpec.Type.OnlyIfNotPresent,value));
             } else if (name.charAt(0)=='!') {
-               headersToAdd.put(name.substring(1),new HeaderSpec(HeaderSpec.Type.Replace,value));
+               targetMap.put(name.substring(1),new HeaderSpec(HeaderSpec.Type.Replace,value));
             } else {
-               headersToAdd.put(name,new HeaderSpec(HeaderSpec.Type.Additive,value));
+               targetMap.put(name,new HeaderSpec(HeaderSpec.Type.Additive,value));
             }
          }
       }
@@ -221,7 +231,7 @@ public class ProxyApplication extends Application
             
             response.setStatus(appResponse.getStatus());
             response.setEntity(appResponse.getEntity());
-            if (headersToCopy.size()>0) {
+            if (headersToCopy.size()>0 || responseHeadersToAdd.keySet().size()>0) {
                Series<Header> appResponseHeaders = (Series<Header>)appResponse.getAttributes().get("org.restlet.http.headers");
                Series<Header> responseHeaders = (Series<Header>)response.getAttributes().get("org.restlet.http.headers");
                if (responseHeaders==null) {
@@ -234,6 +244,23 @@ public class ProxyApplication extends Application
                      responseHeaders.add(name,values[i]);
                   }
                }
+               for (String name : responseHeadersToAdd.keySet()) {
+                  HeaderSpec spec = responseHeadersToAdd.get(name);
+                  switch (spec.type) {
+                     case Replace:
+                        responseHeaders.removeAll(name);
+                        responseHeaders.add(name,spec.value);
+                        break;
+                     case OnlyIfNotPresent:
+                        if (responseHeaders.getFirstValue(name)==null) {
+                           responseHeaders.add(name,spec.value);
+                        }
+                        break;
+                     default:
+                        responseHeaders.add(name,spec.value);
+                  }
+               }
+               
             }
             
          }
