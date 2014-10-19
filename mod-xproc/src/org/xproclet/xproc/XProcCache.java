@@ -38,6 +38,7 @@ import org.restlet.Restlet;
 import org.restlet.data.Method;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
+import org.restlet.engine.application.DecodeRepresentation;
 import org.restlet.representation.Representation;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -102,7 +103,8 @@ public class XProcCache {
                if (representation!=null) {
                   try {
                      String charset = representation.getMediaType().getParameters().getFirstValue("charset");
-                     final Reader rawReader = new InputStreamReader(representation.getStream(),charset==null ? "UTF-8" : charset);
+                     Representation decoded = new DecodeRepresentation(representation);
+                     final Reader rawReader = new InputStreamReader(decoded.getStream(),charset==null ? "UTF-8" : charset);
                      source = new InputSource(new BufferedReader(rawReader) {
                         public void close() 
                            throws IOException
@@ -166,7 +168,8 @@ public class XProcCache {
                   if (representation!=null) {
                      try {
                         String charset = representation.getMediaType().getParameters().getFirstValue("charset");
-                        final Reader rawReader = new InputStreamReader(representation.getStream(),charset==null ? "UTF-8" : charset);
+                        Representation decoded = new DecodeRepresentation(representation);
+                        final Reader rawReader = new InputStreamReader(decoded.getStream(),charset==null ? "UTF-8" : charset);
                         sent = true;
                         return new StreamSource(new BufferedReader(rawReader) {
                            public void close() 
