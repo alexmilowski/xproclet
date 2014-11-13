@@ -77,32 +77,39 @@ public class OAuth2ResponseResource extends ServerResource {
    
    protected Representation fromProvider()
    {
-      Reference oauth2Ref = new Reference(GOOGLE_TOKEN_PROVIDER);
       
+      // Get query as a form
       Form responseData = getRequest().getResourceRef().getQueryAsForm();
       getLogger().info(getRequest().getResourceRef().getQuery());
+      
+      // Check the state and make sure it is a valid waiting request for authentication
       String state = responseData.getFirstValue("state");
       if (state==null || !openIDState.end(state)) {
          getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
          return new StringRepresentation("The request is invalid.",MediaType.TEXT_PLAIN);
       }
 
+      // Setup new information  for token exchange
       Form tokenExchange = new Form();
       tokenExchange.add("client_id", getContext().getParameters().getFirstValue("oauth2.client_id"));
       tokenExchange.add("client_secret", getContext().getParameters().getFirstValue("oauth2.client_secret"));
       tokenExchange.add("code",responseData.getFirstValue("code"));
       tokenExchange.add("redirect_uri",redirectURI.toString());
       tokenExchange.add("grant_type","authorization_code");
-      
+
+      // Exchange the code for a token with the provider
       getLogger().info("Checking response...");
-      getLogger().info(oauth2Ref.toString());
       Restlet client = getContext().getClientDispatcher();
       
+      Reference oauth2Ref = new Reference(GOOGLE_TOKEN_PROVIDER);
       Request checkRequest = new Request(Method.POST,oauth2Ref);
       checkRequest.setEntity(tokenExchange.getWebRepresentation());
       Response checkResponse = client.handle(checkRequest);
       
       if (checkResponse.getStatus().isSuccess()) {
+         // If successful, retrieve the user information
+         
+         // From the response, get the access token
          String json = checkResponse.getEntityAsText();
          getLogger().info(json);
          JsonReader jsonReader = Json.createReader(new StringReader(json));
@@ -110,11 +117,14 @@ public class OAuth2ResponseResource extends ServerResource {
          String accessToken = obj.getString("access_token");
          getLogger().info("access_token="+accessToken);
          
+         // Create a new request with bearer authentication using the access token
+         
          Request infoRequest = new Request(Method.GET,new Reference(GOOGLE_USER_INFO));
          ChallengeResponse tokenResponse = new ChallengeResponse(HTTP_BEARER);
          tokenResponse.setRawValue(accessToken);
          infoRequest.setChallengeResponse(tokenResponse);
 
+         // Retrieve the user
          Response infoResponse = client.handle(infoRequest);
          if (!checkResponse.getStatus().isSuccess()) {
             getLogger().severe("Cannot get user information, status="+checkResponse.getStatus());
@@ -122,6 +132,7 @@ public class OAuth2ResponseResource extends ServerResource {
             return new StringRepresentation("Cannot get user information.",MediaType.TEXT_PLAIN);
          }
          
+         // Parse the JSON response
          String infoJson = infoResponse.getEntityAsText();
          getLogger().info(infoJson);
          jsonReader = Json.createReader(new StringReader(infoJson));
@@ -129,6 +140,8 @@ public class OAuth2ResponseResource extends ServerResource {
          String firstName = infoObj.getString("given_name");
          String lastName = infoObj.getString("family_name");
          String email = infoObj.getString("email");
+         
+         // Create an identity
          Identity user = idManager.get(email);
          if (user==null) {
             Reference unauth = new Reference(getRequest().getResourceRef().getParentRef().getParentRef()+"unauthorized");
@@ -140,6 +153,8 @@ public class OAuth2ResponseResource extends ServerResource {
          }
          Identity identity = user.createSessionIdentity(UUID.randomUUID().toString());
          getLogger().info("Authenticated "+firstName+" "+lastName+" <"+email+"> as "+identity.getAlias());
+         
+         // Create a cookie
          String name = getCookieName(getRequest());
          if (name!=null) {
             CookieSetting cookie = new CookieSetting("I",identity.getSession());
@@ -148,10 +163,13 @@ public class OAuth2ResponseResource extends ServerResource {
             idManager.add(identity.getSession(), identity);
          }
          IdentityFilter.addIdentity(getRequest(), identity);
+         
+         // Redirect to resource
          getResponse().redirectSeeOther(getRequest().getResourceRef().getParentRef().getParentRef());
          return null;
          
       } else {
+         // Somehow we have a bad exchange 
          getLogger().severe("Status: "+checkResponse.getStatus());
          getLogger().severe(checkResponse.getEntityAsText());
          getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);

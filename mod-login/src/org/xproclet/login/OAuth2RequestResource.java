@@ -73,11 +73,11 @@ public class OAuth2RequestResource extends ServerResource {
       
       Reference oauth2Ref = new Reference(provider);
       try {
+         // Construct a redirect URI with the OAuth2 parameters for the service
          URI redirect = new URI(getRequest().getResourceRef().toString()).resolve(getContext().getParameters().getFirstValue("oauth2.redirect_uri"));
          getLogger().info(redirect.toString());
          oauth2Ref.addQueryParameter("client_id", getContext().getParameters().getFirstValue("oauth2.client_id"));
          oauth2Ref.addQueryParameter("redirect_uri", redirect.toString());
-         //openidRef.addQueryParameter("openid.realm", getRequest().getHostRef().toString());
          oauth2Ref.addQueryParameter("response_type", "code");
          oauth2Ref.addQueryParameter("scope", "openid email");
          oauth2Ref.addQueryParameter("state", id);
@@ -85,7 +85,6 @@ public class OAuth2RequestResource extends ServerResource {
       } catch (URISyntaxException ex) {
          getLogger().log(Level.SEVERE,"Cannot construct redirect URI",ex);
       }
-      //response.setEntity(new StringRepresentation(openidRef.toString(),MediaType.TEXT_PLAIN));
       return null;
    }
 }
