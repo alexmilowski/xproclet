@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.xproclet.org/V/Server/">
+
+   <client protocol="FILE"/>
+   <client protocol="HTTP"/>
+   <client protocol="HTTPS"/>
+   
+   <include href="../dist/mod-login/mod-login.xml"/>
+
+   <server protocol="HTTPS" address="*" port="8081">
+      <parameter name="keystorePath" href="../../server/test/conf/localhost.keystore" use="path"/>
+      <parameter name="keystorePassword" value="localhost"/>
+      <parameter name="keyPassword" value="localhost"/>
+      <parameter name="keystoreType" value="JKS"/>
+      <host name="*">
+         <parameter name="cookie.name" value="I"/>
+         <parameter name="login.key" value="email"/>
+         <parameter name="login.users" href="users.xml"/>
+         <filter match="" class="org.xproclet.login.IdentityFilter" ref="login">
+            <next>
+               <router>
+                  <attribute name="openid.context" class="org.xproclet.login.OpenIDContext" ref="login"/>
+                  <route match="/auth" mode="equals" class="org.xproclet.login.OpenIDRequestResource" ref="login"/>
+                  <route match="/auth/{id}" mode="equals" class="org.xproclet.login.OpenIDResponseResource" ref="login"/>
+                  <route match="/unauthorized" mode="equals" class="org.xproclet.login.OpenIDUnauthorizedResource" ref="login"/>
+                  <filter match="" class="org.xproclet.login.SecurityGuard" ref="login">
+                     <parameter name="pattern" value="/"/>
+                     <next>
+                        <router>
+                           <content match="/" href="web" index="index.xhtml"/>
+                        </router>
+                     </next>
+                  </filter>
+                  
+               </router>
+            </next>
+         </filter>
+      </host>
+   </server>
+</component>
